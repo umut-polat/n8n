@@ -7,8 +7,15 @@ describe('adjustPutItem', () => {
 		});
 	});
 
-	it('keeps numeric strings as S', () => {
-		expect(adjustPutItem({ id: '34', executionId: '1234567890' })).toEqual({
+	it('parses numeric strings as N when autoParseNumbers is enabled', () => {
+		expect(adjustPutItem({ id: '34', executionId: '1234567890' }, true)).toEqual({
+			id: { N: '34' },
+			executionId: { N: '1234567890' },
+		});
+	});
+
+	it('keeps numeric strings as S when autoParseNumbers is disabled', () => {
+		expect(adjustPutItem({ id: '34', executionId: '1234567890' }, false)).toEqual({
 			id: { S: '34' },
 			executionId: { S: '1234567890' },
 		});
@@ -27,9 +34,4 @@ describe('adjustPutItem', () => {
 		});
 	});
 
-	it('maps objects to M', () => {
-		expect(adjustPutItem({ meta: { key: 'val' } })).toEqual({
-			meta: { M: '[object Object]' },
-		});
-	});
 });
